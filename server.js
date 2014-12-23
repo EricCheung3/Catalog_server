@@ -21,10 +21,10 @@ var connection  = require('express-myconnection'),
 app.use(
 
     connection(mysql,{
-        host     : 'localhost',
-        user     : 'root',
-        password : '',
-        database : 'test',
+        host     : 'www.db4free.net',
+        user     : 'idmdbtest',
+        password : 'idmdbtest',
+        database : 'idmdbtest',
         debug    : false //set true if you wanna see debug logger
     },'request')
 
@@ -37,7 +37,7 @@ app.get('/',function(req,res){
 
 //RESTful route
 var router = express.Router();
-
+var port =process.env.PORT||3000
 
 /*------------------------------------------------------
 *  This is router middleware,invoked everytime
@@ -231,7 +231,7 @@ curut2.delete(function(req,res){
 app.use('/api', router);
 
 //start Server
-var server = app.listen(3000,function(){
+var server = app.listen(port,function(){
 
    console.log("Listening to port %s",server.address().port);
 
