@@ -52,7 +52,7 @@ router.use(function(req, res, next) {
 });
 
 var curut = router.route('/user');
-var routeData = route.route('/data');
+var routeData = router.route('/data');
 
 routeData.get(function(req,res)){
 
