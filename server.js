@@ -52,7 +52,7 @@ router.use(function(req, res, next) {
 });
 
 var curut = router.route('/user');
-var datarut = router.route('data');
+var datarut = router.route('/data');
 
 //show the CRUD interface | GET
 curut.get(function(req,res){
