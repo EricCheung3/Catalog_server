@@ -52,7 +52,7 @@ router.use(function(req, res, next) {
 });
 
 var curut = router.route('/user');
-
+var datarut = router.route('data');
 
 //show the CRUD interface | GET
 curut.get(function(req,res){
@@ -76,6 +76,31 @@ curut.get(function(req,res){
     });
 
 });
+
+
+datarut.get(function(req,res){
+
+
+    req.getConnection(function(err,conn){
+
+        if (err) return next("Cannot Connect");
+
+        var query = conn.query('SELECT * FROM t_user',function(err,rows){
+
+            if(err){
+                console.log(err);
+                return next("Mysql error, check your query");
+            }
+
+            res.render('data',{title:"RESTful Crud Example",data:rows});
+
+         });
+
+    });
+
+});
+
+
 //post data to DB | POST
 curut.post(function(req,res){
 
