@@ -52,6 +52,30 @@ router.use(function(req, res, next) {
 });
 
 var curut = router.route('/user');
+var routeData = route.route('/data');
+
+routeData.get(function(req,res)){
+
+    req.getConnection(function(err,conn){
+
+        if (err) return next("Cannot Connect");
+
+        var query = conn.query('SELECT * FROM t_user',function(err,rows){
+
+            if(err){
+                console.log(err);
+                return next("Mysql error, check your query");
+            }
+
+            console.log(query);
+
+         });
+
+    });
+
+}
+
+
 
 
 //show the CRUD interface | GET
