@@ -67,7 +67,7 @@ routeData.get(function(req,res)){
                 return next("Mysql error, check your query");
             }
 
-            res.console.log(query);
+            res.render('data',{title:"Send data",data:rows});
 
          });
 
