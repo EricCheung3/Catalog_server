@@ -69,7 +69,7 @@ curut.get(function(req,res){
                 return next("Mysql error, check your query");
             }
 
-            //res.render('user',{title:"RESTful Crud Example",data:rows});
+            res.render('user',{title:"RESTful Crud Example",data:rows});
 
          });
 
