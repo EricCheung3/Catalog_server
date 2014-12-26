@@ -92,12 +92,10 @@ datarut.get(function(req,res){
                 return next("Mysql error, check your query");
             }
 
-            res.render('data',{title:"RESTful Crud Example",data:JSON.stringify(rows, null, 2)});
+            res.render('data',{title:"RESTful Crud Example",data:JSON.stringify(rows)});
 
          });
-
     });
-,
 });
 
 
