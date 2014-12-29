@@ -80,6 +80,10 @@ curut.get(function(req,res){
 
 datarut.get(function(req,res){
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5762564f975f0401a00a9bb03d7a36ff772b4ae3
     req.getConnection(function(err,conn){
 
         if (err) return next("Cannot Connect");
