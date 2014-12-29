@@ -22,9 +22,9 @@ app.use(
 
     connection(mysql,{
         host     : 'www.db4free.net',
-        user     : 'idmdbtest',
-        password : 'idmdbtest',
-        database : 'idmdbtest',
+        user     : 'fooddbtest',
+        password : 'fooddbtest',
+        database : 'fooddbtest',
         debug    : false //set true if you wanna see debug logger
     },'request')
 
@@ -80,10 +80,6 @@ curut.get(function(req,res){
 
 datarut.get(function(req,res){
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 5762564f975f0401a00a9bb03d7a36ff772b4ae3
     req.getConnection(function(err,conn){
 
         if (err) return next("Cannot Connect");
@@ -147,13 +143,6 @@ curut.post(function(req,res){
 //now for Single route (GET,DELETE,PUT)
 var curut2 = router.route('/user/:user_id');
 
-/*------------------------------------------------------
-route.all is extremely useful. you can use it to do
-stuffs for specific routes. for example you need to do
-a validation everytime route /api/user/:user_id it hit.
-
-remove curut2.all() if you dont want it
-------------------------------------------------------*/
 curut2.all(function(req,res,next){
     console.log("You need to smth about curut2 Route ? Do it here");
     console.log(req.params);
