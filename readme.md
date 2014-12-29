@@ -1,1 +1,1 @@
-Add server for food-catalog Paul 
+Server for food-catalog
