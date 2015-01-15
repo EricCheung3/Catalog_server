@@ -34,7 +34,7 @@
         </tr>
     <% }
     
-     }else{ %>
+     } else { %>
          <tr>
             <td colspan="5">No Data</td>
          </tr>
@@ -97,7 +97,7 @@
        });
     }
     
-    function deleteUser(user_id){
+    function deleteUser( user_id ){
     
         $.ajax({
             url:"/api/user/"+user_id,
@@ -107,6 +107,7 @@
                 window.location.reload();
                 return false;
             },
+
             error:function(xhr, status, error){
             
                 console.log(xhr.responseText);

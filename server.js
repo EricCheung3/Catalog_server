@@ -1,43 +1,57 @@
-var express  = require('express'),
-    path     = require('path'),
-    bodyParser = require('body-parser'),
+/*
+Following shortucts are adopted
+
+Routing:
+    router -> rut
+    usrRut /root/usr
+    usrIDRut /root/usr/id:
+*/
+
+var express  = require( 'express' ),
+    path = require( 'path' ),
+    bodyParser = require( 'body-parser' ),
     app = express(),
-    expressValidator = require('express-validator');
+    expressValidator = require( 'express-validator' );
 
 
 /*Set EJS template Engine*/
-app.set('views','./views');
-app.set('view engine','ejs');
+app.set( 'views','./views' );
+app.set( 'view engine','ejs' );
 
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.urlencoded({ extended: true })); //support x-www-form-urlencoded
-app.use(bodyParser.json());
-app.use(expressValidator());
+app.use( express.static( path.join(__dirname, 'public')) );
+app.use( bodyParser.urlencoded({ extended: true }) ); //support x-www-form-urlencoded
+app.use( bodyParser.json() );
+app.use( expressValidator() );
 
 /*MySql connection*/
-var connection  = require('express-myconnection'),
-    mysql = require('mysql');
+var connection  = require( 'express-myconnection' ),
+    mysql = require( 'mysql' );
+
+/*lest use define a model, Model or Database begins with upper case letter*/
+var Model = {} 
+
 
 app.use(
-
-    connection(mysql,{
+    connection( mysql,{
         host     : 'www.db4free.net',
         user     : 'fooddbtest',
         password : 'fooddbtest',
         database : 'fooddbtest',
         debug    : false //set true if you wanna see debug logger
-    },'request')
-
+    },'request' )
 );
+/* Use in-house prepated query lib*/
+var sql_query = require( './mysql_query.js' )
 
-app.get('/',function(req,res){
-    res.send('Welcome');
+app.get( '/',function( req,res ){
+    res.send( 'Welcome' );
 });
-
 
 //RESTful route
 var router = express.Router();
-var port =process.env.PORT||3000
+
+/*process.env.PORT is added for Heroku deployment*/
+var port = process.env.PORT || 3000
 
 /*------------------------------------------------------
 *  This is router middleware,invoked everytime
@@ -46,52 +60,53 @@ var port =process.env.PORT||3000
 *  we can use this for doing validation,authetication
 *  for every route started with /api
 --------------------------------------------------------*/
-router.use(function(req, res, next) {
-    console.log(req.method, req.url);
+router.use(function( req, res, next ) {
+    console.log( req.method, req.url );
     next();
 });
 
-var curut = router.route('/user');
-var datarut = router.route('/data');
+/*Router section*/
+
+var uerIDRut = router.route( '/user' );
+var dataRut = router.route( '/data' );
 
 //show the CRUD interface | GET
-curut.get(function(req,res){
-
-
+uerIDRut.get(function(req, res) {
     req.getConnection(function(err,conn){
 
         if (err) return next("Cannot Connect");
 
-        var query = conn.query('SELECT * FROM t_user',function(err,rows){
+        sql_query.tableName = 't_user';
+
+            var query = conn.query( sql_query.getAll(), function( err, t_user ) {
 
             if(err){
                 console.log(err);
                 return next("Mysql error, check your query");
             }
 
-            res.render('user',{title:"RESTful Crud Example",data:rows});
+            console.log ( rows );
 
+            res.render('user', { title:"RESTful Crud Example", data: t_user });
          });
-
     });
-
 });
 
 
-datarut.get(function(req,res){
+dataRut.get( function(req,res ){
 
     req.getConnection(function(err,conn){
 
         if (err) return next("Cannot Connect");
 
-        var query = conn.query('SELECT * FROM t_user',function(err,rows){
+        var query = conn.query('SELECT * FROM t_user',function(err,rows) {
 
             if(err){
                 console.log(err);
                 return next("Mysql error, check your query");
             }
 
-            res.render('data',{title:"RESTful Crud Example",data:JSON.stringify(rows)});
+            res.render( 'data', {title:"RESTful Crud Example", data: JSON.stringify(rows)});
 
          });
     });
@@ -99,7 +114,7 @@ datarut.get(function(req,res){
 
 
 //post data to DB | POST
-curut.post(function(req,res){
+uerIDRut.post( function(req,res){
 
     //validation
     req.assert('name','Name is required').notEmpty();
@@ -141,16 +156,16 @@ curut.post(function(req,res){
 
 
 //now for Single route (GET,DELETE,PUT)
-var curut2 = router.route('/user/:user_id');
+var userIdRut = router.route('/user/:user_id');
 
-curut2.all(function(req,res,next){
-    console.log("You need to smth about curut2 Route ? Do it here");
+userIdRut.all(function(req,res,next){
+    console.log("You need to smth about userIdRut Route ? Do it here");
     console.log(req.params);
     next();
 });
 
 //get data to update
-curut2.get(function(req,res,next){
+userIdRut.get(function(req,res,next){
 
     var user_id = req.params.user_id;
 
@@ -177,7 +192,7 @@ curut2.get(function(req,res,next){
 });
 
 //update data
-curut2.put(function(req,res){
+userIdRut.put(function(req,res){
     var user_id = req.params.user_id;
 
     //validation
@@ -219,11 +234,9 @@ curut2.put(function(req,res){
 });
 
 //delete data
-curut2.delete(function(req,res){
-
+userIdRut.delete(function(req,res){
     var user_id = req.params.user_id;
-
-     req.getConnection(function (err, conn) {
+    req.getConnection(function (err, conn) {
 
         if (err) return next("Cannot Connect");
 
@@ -235,15 +248,12 @@ curut2.delete(function(req,res){
              }
 
              res.sendStatus(200);
-
         });
         //console.log(query.sql);
-
      });
 });
 
-//now we need to apply our router here
-app.use('/api', router);
+app.use('/GT', router);
 
 //start Server
 var server = app.listen(port,function(){
