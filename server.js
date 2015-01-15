@@ -53,13 +53,6 @@ var router = express.Router();
 /*process.env.PORT is added for Heroku deployment*/
 var port = process.env.PORT || 3000
 
-/*------------------------------------------------------
-*  This is router middleware,invoked everytime
-*  we hit url /api and anything after /api
-*  like /api/user , /api/user/7
-*  we can use this for doing validation,authetication
-*  for every route started with /api
---------------------------------------------------------*/
 router.use(function( req, res, next ) {
     console.log( req.method, req.url );
     next();
@@ -67,54 +60,46 @@ router.use(function( req, res, next ) {
 
 /*Router section*/
 
-var uerIDRut = router.route( '/user' );
+var userIDRut = router.route('/data/user/:id');
 var dataRut = router.route( '/data' );
 
+/*Model or table uses capitcal letter*/
+var userDataRut = router.route('/data/user');
+
 //show the CRUD interface | GET
-uerIDRut.get(function(req, res) {
-    req.getConnection(function(err,conn){
 
-        if (err) return next("Cannot Connect");
+sql_query.tableName = "User";
+findAll.apply(userDataRut,[sql_query]);
 
-        sql_query.tableName = 't_user';
+sql_query.tableName = "t_user";
+findAll.apply(dataRut,[sql_query]);
 
-            var query = conn.query( sql_query.getAll(), function( err, t_user ) {
-
-            if(err){
-                console.log(err);
-                return next("Mysql error, check your query");
-            }
-
-            console.log ( rows );
-
-            res.render('user', { title:"RESTful Crud Example", data: t_user });
-         });
-    });
-});
+sql_query.tableName = "User";
+findAll.apply(userIDRut,[sql_query]);
 
 
-dataRut.get( function(req,res ){
-
-    req.getConnection(function(err,conn){
-
-        if (err) return next("Cannot Connect");
-
-        var query = conn.query('SELECT * FROM t_user',function(err,rows) {
+function findAll(sql_query){
+    this.get(function(req, res) {
+        console.log('xxxx' + req.param('id'));
+        req.getConnection(function(err,conn){
+            if (err) return next("Cannot Connect");
+            var query = conn.query( sql_query.getAll(), function( err, data ) {
 
             if(err){
                 console.log(err);
-                return next("Mysql error, check your query");
+                return next(sql_query.error.connection + sql_query.print());
             }
 
-            res.render( 'data', {title:"RESTful Crud Example", data: JSON.stringify(rows)});
+            res.render('data', { title:"Ajax transport", data:  JSON.stringify(data) });
 
-         });
+            });
+        });
     });
-});
+}
 
 
 //post data to DB | POST
-uerIDRut.post( function(req,res){
+userIDRut.post( function(req,res){
 
     //validation
     req.assert('name','Name is required').notEmpty();

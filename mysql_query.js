@@ -15,11 +15,11 @@ module.exports = {
 		var content = 'dbName: ' + this.dbName + '\n' +
 			'tableName: ' + this.tableName + '\n' +
 			'rowName: ' + this.rowName;
-		console.log(content);
+		console.log( content );
 		return content;
 	},
 
 	error: {
-		connect: 'connection failed at ' + 'tableName: ' + this.tableName 
+		connection: 'connection failed at ' + '\n'
 	}
 }
