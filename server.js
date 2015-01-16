@@ -6,9 +6,21 @@ Routing:
     usrRut /root/usr
     usrIDRut /root/usr/id:
 */
+var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+
+    // intercept OPTIONS method
+    if ('OPTIONS' == req.method) {
+      res.send(200);
+    }
+    else {
+      next();
+    }
+};
 
 var express  = require( 'express' ),
-    cors = require( 'cors' ),
     path = require( 'path' ),
     bodyParser = require( 'body-parser' ),
     app = express(),
@@ -23,7 +35,7 @@ app.use( express.static( path.join(__dirname, 'public')) );
 app.use( bodyParser.urlencoded({ extended: true }) ); //support x-www-form-urlencoded
 app.use( bodyParser.json() );
 app.use( expressValidator() );
-app.use( cors );
+app.use( allowCrossDomain );
 
 /*MySql connection*/
 var connection  = require( 'express-myconnection' ),
