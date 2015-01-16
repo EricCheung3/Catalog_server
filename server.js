@@ -6,6 +6,9 @@ Routing:
     usrRut /root/usr
     usrIDRut /root/usr/id:
 */
+
+/*http://en.wikipedia.org/wiki/Cross-origin_resource_sharing*/
+
 var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
@@ -40,10 +43,6 @@ app.use( allowCrossDomain );
 /*MySql connection*/
 var connection  = require( 'express-myconnection' ),
     mysql = require( 'mysql' );
-
-/*lest use define a model, Model or Database begins with upper case letter*/
-var Model = {} 
-
 
 app.use(
     connection( mysql,{
@@ -130,7 +129,6 @@ function findById(sql_query){
     });
 }
 
-
 //post data to DB | POST
 userIDRut.post( function(req,res){
 
@@ -171,7 +169,6 @@ userIDRut.post( function(req,res){
      });
 
 });
-
 
 //now for Single route (GET,DELETE,PUT)
 var userIdRut = router.route('/user/:user_id');
