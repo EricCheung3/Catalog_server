@@ -8,7 +8,7 @@ Routing:
 */
 
 var express  = require( 'express' ),
-    cors = require('cors'),
+    cors = require( 'cors' ),
     path = require( 'path' ),
     bodyParser = require( 'body-parser' ),
     app = express(),
@@ -23,7 +23,7 @@ app.use( express.static( path.join(__dirname, 'public')) );
 app.use( bodyParser.urlencoded({ extended: true }) ); //support x-www-form-urlencoded
 app.use( bodyParser.json() );
 app.use( expressValidator() );
-aap.use( cors );
+app.use( cors );
 
 /*MySql connection*/
 var connection  = require( 'express-myconnection' ),
