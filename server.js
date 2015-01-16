@@ -59,12 +59,9 @@ router.use(function( req, res, next ) {
 });
 
 /*Router section*/
-
-var userIDRut = router.route('/data/user/:id');
-var dataRut = router.route( '/data' );
-
-/*Model or table uses capitcal letter*/
-var userDataRut = router.route('/data/user');
+var userIDRut = router.route('/db/user/:id');
+var dataRut = router.route( '/db' );
+var userDataRut = router.route('/db/user');
 
 //show the CRUD interface | GET
 
@@ -75,12 +72,10 @@ sql_query.tableName = "t_user";
 findAll.apply(dataRut,[sql_query]);
 
 sql_query.tableName = "User";
-findAll.apply(userIDRut,[sql_query]);
-
+findById.apply(userIDRut,[sql_query]);
 
 function findAll(sql_query){
     this.get(function(req, res) {
-        console.log('xxxx' + req.param('id'));
         req.getConnection(function(err,conn){
             if (err) return next("Cannot Connect");
             var query = conn.query( sql_query.getAll(), function( err, data ) {
@@ -90,7 +85,31 @@ function findAll(sql_query){
                 return next(sql_query.error.connection + sql_query.print());
             }
 
-            res.render('data', { title:"Ajax transport", data:  JSON.stringify(data) });
+            res.render('data', { title:"Ajax communication", data:  JSON.stringify(data) });
+
+            });
+        });
+    });
+}
+
+function findById(sql_query){
+    this.get(function(req, res) {
+        sql_query.id = req.param('id');
+        console.log( sql_query.getById() );
+        req.getConnection(function(err,conn){
+            if (err) return next("Cannot Connect");
+            var query = conn.query( sql_query.getById(), function( err, data ) {
+
+            if(err){
+                console.log(err);
+                return next(sql_query.error.connection + sql_query.print());
+            }
+
+            if ( data.length == 0) {
+                data = 'null'; /*'null' string is sent back, when the id deoes not exist*/
+            }
+
+            res.render('data', { title:"Ajax communication", data:  JSON.stringify(data) });
 
             });
         });
@@ -124,7 +143,7 @@ userIDRut.post( function(req,res){
 
         if (err) return next("Cannot Connect");
 
-        var query = conn.query("INSERT INTO t_user set ? ",data, function(err, rows){
+        var query = conn.query("INSERT INTO t_user set ? ", data, function(err, rows){
 
            if(err){
                 console.log(err);
